@@ -1,0 +1,21 @@
+{
+  "name": "telebirr SuperApp",
+  "short_name": "telebirr",
+  "description": "telebirr SuperApp - All-in-One. Send money, buy airtime, pay bills and more.",
+  "id": "telebirr-superapp",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#8dc73f",
+  "theme_color": "#8dc73f",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["finance", "utilities"],
+  "icons": [
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/icons/icon-white.jpg", "sizes": "512x512", "type": "image/jpeg", "purpose": "any" }
+  ]
+}

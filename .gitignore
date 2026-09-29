@@ -1,0 +1,13 @@
+# Original design references (159 MB of screenshots). The runtime app only needs
+# the copies under assets/. Remove this line if you want them in the repository.
+ui/
+
+# editor / OS noise
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+
+# throwaway preview helpers
+.preview/

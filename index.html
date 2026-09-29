@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>telebirr SuperApp</title>
+<meta name="description" content="telebirr SuperApp - All-in-One">
+<meta name="theme-color" content="#8dc73f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon-512.png">
+<link rel="apple-touch-icon" href="assets/icons/icon-512.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="telebirr">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="phone">
+    <div id="view" class="view"></div>
+
+    <nav id="tabbar" class="tabbar" aria-label="Main"></nav>
+
+    <button id="fab" class="fab" type="button" aria-label="Nearby agents">
+      <svg viewBox="0 0 24 24" class="ico"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+    </button>
+
+    <div id="overlay" class="overlay" hidden></div>
+    <div id="toastwrap" class="toastwrap" aria-live="polite"></div>
+
+    <div id="splash" class="splash">
+      <div class="splash-logo">
+        <img src="assets/brands/telebirr-text.png" alt="telebirr">
+        <div class="splash-super">Super<b>App</b></div>
+      </div>
+      <div id="splashSpin" class="spinbox" hidden><div class="spinner"></div></div>
+    </div>
+
+    <div id="boot" class="boot" hidden>
+      <div class="spinbox"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+  <noscript><p style="padding:20px;font:16px system-ui">JavaScript is required to run this app.</p></noscript>
+</body>
+</html>
