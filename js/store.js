@@ -1,3 +1,9 @@
+/* js/store.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.store || (TB.store = {});
+
 /* State store: everything the app remembers lives here (localStorage). */
 
 const KEY = 'telebirr.state.v1';
@@ -62,7 +68,7 @@ function persist() {
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* quota - ignore */ }
 }
 
-export const store = {
+const store = {
   get profile() { return state.profile; },
   get prefs() { return state.prefs; },
   get receivers() { return state.receivers; },
@@ -124,33 +130,37 @@ export const store = {
   DEFAULTS
 };
 
-export function normPhone(p) {
+function normPhone(p) {
   return String(p || '').replace(/\D/g, '').replace(/^251/, '').replace(/^0/, '');
 }
 
-export function maskPhone(p) {
+function maskPhone(p) {
   const n = normPhone(p);
   if (n.length < 4) return '+251';
   return '+251****' + n.slice(-2);
 }
 
-export function money(n) {
+function money(n) {
   const v = Number(n || 0);
   return v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-export function maskAmount(hidden) {
+function maskAmount(hidden) {
   return hidden ? '******' : money(store.profile.balance);
 }
 
-export function refCode() {
+function refCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
   let s = 'DIL';
   for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
   return s;
 }
 
-export function stamp(d = new Date()) {
+function stamp(d = new Date()) {
   const p = n => String(n).padStart(2, '0');
   return `${d.getFullYear()}/${p(d.getMonth() + 1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
 }
+
+
+  Object.assign(NS, { store, normPhone, maskPhone, money, maskAmount, refCode, stamp });
+})();

@@ -1,25 +1,30 @@
+/* js/screens/common.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.common || (TB.common = {});
+  var { I, ico, esc, node, on, toast, sheet, dialog, closeOverlay, keypadHTML, pinpadHTML, pinDotsHTML, wireKeypad, wirePin, fail, paintQR, action, nav } = TB.ui;
+  var { store, money, refCode, stamp, normPhone } = TB.store;
+  var { ADS, COLORS } = TB.data;
+
 /* Building blocks shared by every screen. */
 
-import { I, ico, esc, node, on, toast, sheet, dialog, closeOverlay, keypadHTML, pinpadHTML, pinDotsHTML, wireKeypad, wirePin, fail, paintQR, action } from '../ui.js';
-import { store, money, refCode, stamp, normPhone } from '../store.js';
-import { ADS, COLORS } from '../data.js';
-import { nav } from '../ui.js';
 
 const B = 'assets/brands/';
 
-export function busy(on) {
+function busy(on) {
   const b = document.getElementById('boot');
   if (b) b.hidden = !on;
 }
 
-export function brandbar() {
+function brandbar() {
   return `<div class="brandbar">
     <img src="${B}ethio-telecom-name.png" alt="ethio telecom">
     <img class="r" src="${B}telebirr-text.png" alt="telebirr">
   </div>`;
 }
 
-export function topbar(title, opts = {}) {
+function topbar(title, opts = {}) {
   const right = opts.right || '';
   return `<div class="topbar ${opts.green ? 'head-green' : ''}">
     ${opts.noback ? '' : `<button class="back" type="button" data-act="${opts.backAct || 'nav.back'}" aria-label="Back">${ico('back', 'ico')}</button>`}
@@ -28,14 +33,14 @@ export function topbar(title, opts = {}) {
   </div>`;
 }
 
-export function initials(name) {
+function initials(name) {
   const parts = String(name || '?').replace(/[^A-Za-z0-9 ]/g, ' ').trim().split(/\s+/);
   const a = (parts[0] || '?')[0] || '?';
   const b = parts.length > 1 ? parts[1][0] : (parts[0] || '')[1] || '';
   return (a + b).toUpperCase();
 }
 
-export function hashColor(name) {
+function hashColor(name) {
   let h = 0;
   const s = String(name || '');
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 997;
@@ -43,7 +48,7 @@ export function hashColor(name) {
 }
 
 /** Brand-ish icon for a catalogue entry: image when we have one, else a colour badge. */
-export function catalogIcon(item, size = 30) {
+function catalogIcon(item, size = 30) {
   if (item.img) {
     return `<img src="${B}${esc(item.img)}" alt="" style="width:${size}px;height:${size}px;object-fit:contain"
       onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${esc(initials(item.name))}',className:'fallback'}))">`;
@@ -51,13 +56,13 @@ export function catalogIcon(item, size = 30) {
   return ico(item.icon || 'grid', 'ico');
 }
 
-export function carousel(ads = ADS, tall) {
+function carousel(ads = ADS, tall) {
   const items = ads.map(a => `<div class="ad ${tall ? 'tall' : ''}"><img src="${a.img}" alt="${esc(a.label || '')}"></div>`).join('');
   const dots = ads.map((_, i) => `<i class="${i === 0 ? 'on' : ''}"></i>`).join('');
   return `<div class="carousel" data-carousel>${items}</div><div class="dots" data-dots>${dots}</div>`;
 }
 
-export function wireCarousel(root) {
+function wireCarousel(root) {
   const c = root.querySelector('[data-carousel]');
   if (!c) return;
   const dots = Array.from(root.querySelectorAll('[data-dots] i'));
@@ -77,7 +82,7 @@ export function wireCarousel(root) {
 }
 
 /* ------------------------------------------------------------- amount screen */
-export function amountPageHTML({ title, head, notes = true, okLabel = 'OK', backAct }) {
+function amountPageHTML({ title, head, notes = true, okLabel = 'OK', backAct }) {
   return `${topbar(title, { backAct })}
   <div class="body" style="display:flex;flex-direction:column;min-height:calc(100% - 54px)">
     ${head ? `<div class="amt-hero">
@@ -100,7 +105,7 @@ export function amountPageHTML({ title, head, notes = true, okLabel = 'OK', back
 }
 
 /* --------------------------------------------------------------- PIN prompt */
-export function pinPrompt({ amount, title, onOk }) {
+function pinPrompt({ amount, title, onOk }) {
   const label = amount == null ? '' : `${money(amount)}<span class="cur">ETB</span>`;
   const el = sheet(`
     <div style="position:relative">
@@ -139,7 +144,7 @@ export function pinPrompt({ amount, title, onOk }) {
 }
 
 /* --------------------------------------------------------------- confirm sheet */
-export function confirmSheet({ heading, toName, total, fee = 1, original, method = true, actionLabel = 'Send', fingerprint = true, onSend }) {
+function confirmSheet({ heading, toName, total, fee = 1, original, method = true, actionLabel = 'Send', fingerprint = true, onSend }) {
   const bal = store.profile.balance;
   return sheet(`
     <div class="grab"></div>
@@ -174,7 +179,7 @@ export function confirmSheet({ heading, toName, total, fee = 1, original, method
 /* ---------------------------------------------------------------- pay flow */
 let pending = null;
 
-export function initCommon() {
+function initCommon() {
   action('overlay.close', () => closeOverlay());
   action('nav.back', () => nav.back());
   action('nav.tab', (el) => nav.tab(el.dataset.to));
@@ -196,7 +201,7 @@ export function initCommon() {
  * `toName` is the payee shown on the receipt (comes from saved receivers so the
  * private settings panel controls what the receipt says).
  */
-export function startPay({ amount, toName, toPhone, kind, kindLabel, heading, fee = 1, merchant = false, note = '' }) {
+function startPay({ amount, toName, toPhone, kind, kindLabel, heading, fee = 1, merchant = false, note = '' }) {
   const total = Number(amount) + Number(fee);
   pending = {
     commit() {
@@ -234,7 +239,7 @@ export function startPay({ amount, toName, toPhone, kind, kindLabel, heading, fe
 }
 
 /* ------------------------------------------------------------------ receipt */
-export function receiptHTML(txn) {
+function receiptHTML(txn) {
   return `<div class="receipt">
     <div class="bar">
       <button type="button" data-act="receipt.download">${ico('download', 'ico')} Download</button>
@@ -260,7 +265,7 @@ export function receiptHTML(txn) {
 }
 
 /** Printable document. Deliberately marked as a demo - it is not a real receipt. */
-export function receiptDocHTML(txn) {
+function receiptDocHTML(txn) {
   const p = store.profile;
   return `<div class="receipt-doc" id="printarea">
     <div class="hd">
@@ -296,7 +301,7 @@ export function receiptDocHTML(txn) {
   </div>`;
 }
 
-export function printDoc(txn) {
+function printDoc(txn) {
   const holder = document.createElement('div');
   holder.id = 'print-host';
   holder.innerHTML = receiptDocHTML(txn);
@@ -307,12 +312,12 @@ export function printDoc(txn) {
   setTimeout(done, 8000);
 }
 
-export function receiptCanvas(txn) {
+function receiptCanvas(txn) {
   const c = document.getElementById('aboutQR');
   if (c) paintQR(c, txn.ref);
 }
 
-export function shareTxn(txn) {
+function shareTxn(txn) {
   const text = `telebirr transaction ${txn.ref}\n${txn.type}\nTo: ${txn.to}\nAmount: ${money(Math.abs(txn.amount))} ETB\n${txn.time}`;
   if (navigator.share) {
     navigator.share({ title: 'telebirr receipt', text }).catch(() => {});
@@ -323,11 +328,11 @@ export function shareTxn(txn) {
 }
 
 /** Generic "not uploaded yet" behaviour: never freeze, always say something. */
-export function notReady(what) {
+function notReady(what) {
   toast(`${what ? what + ': ' : ''}Something went wrong. Please try again later.`, 'err');
 }
 
-export function soonPage({ title, body, icon = 'info', actionLabel, action }) {
+function soonPage({ title, body, icon = 'info', actionLabel, action }) {
   return `${topbar(title)}
    <div class="body center" style="justify-content:center;padding:40px 24px;gap:14px;text-align:center">
      <div class="fp-ring">${ico(icon, 'ico lg')}</div>
@@ -336,3 +341,7 @@ export function soonPage({ title, body, icon = 'info', actionLabel, action }) {
      ${actionLabel ? `<button class="btn" style="max-width:240px;margin-top:8px" data-act="${action}">${esc(actionLabel)}</button>` : ''}
    </div>`;
 }
+
+
+  Object.assign(NS, { busy, brandbar, topbar, initials, hashColor, catalogIcon, carousel, wireCarousel, amountPageHTML, pinPrompt, confirmSheet, initCommon, startPay, receiptHTML, receiptDocHTML, printDoc, receiptCanvas, shareTxn, notReady, soonPage });
+})();

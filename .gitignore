@@ -1,6 +1,6 @@
 # Original design references (159 MB of screenshots). The runtime app only needs
 # the copies under assets/. Remove this line if you want them in the repository.
-ui/
+/ui/
 
 # editor / OS noise
 .DS_Store

@@ -1,7 +1,14 @@
-import { screen, nav, action, ico, esc, on, toast, dialog, closeOverlay, wireKeypad } from '../ui.js';
-import { store, normPhone } from '../store.js';
-import { ADS } from '../data.js';
-import { topbar, carousel, wireCarousel, amountPageHTML, startPay, notReady } from './common.js';
+/* js/screens/send.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.send || (NS.send = {});
+  var { screen, nav, action, ico, esc, on, toast, dialog, closeOverlay, wireKeypad } = TB.ui;
+  var { store, normPhone } = TB.store;
+  var { ADS } = TB.data;
+  var { topbar, carousel, wireCarousel, amountPageHTML, startPay, notReady } = TB.common;
+
 
 const recentHTML = () => {
   const rs = store.receivers;
@@ -119,3 +126,6 @@ action('send.clear', () => {
 
 action('send.scan', () => notReady('QR scanner'));
 action('send.contacts', () => notReady('Phone contacts'));
+
+
+})();

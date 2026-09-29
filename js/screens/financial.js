@@ -1,6 +1,13 @@
-import { screen, nav, action, ico, esc, toast } from '../ui.js';
-import { store, money } from '../store.js';
-import { topbar, notReady } from './common.js';
+/* js/screens/financial.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.financial || (NS.financial = {});
+  var { screen, nav, action, ico, esc, toast } = TB.ui;
+  var { store, money } = TB.store;
+  var { topbar, notReady } = TB.common;
+
 
 screen('financialCbe', {
   view() {
@@ -51,3 +58,6 @@ screen('financialCbe', {
 action('fin.activate', () => notReady('Financial Service activation'));
 action('fin.endekas', () => notReady('Endekas'));
 action('fin.siinq', () => notReady('Siinq'));
+
+
+})();

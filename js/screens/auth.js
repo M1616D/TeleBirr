@@ -1,6 +1,13 @@
-import { screen, nav, ico, esc, on, toast, dialog, closeOverlay, pinpadHTML, pinDotsHTML, wirePin } from '../ui.js';
-import { store, maskPhone, normPhone } from '../store.js';
-import { brandbar, busy } from './common.js';
+/* js/screens/auth.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.auth || (NS.auth = {});
+  var { screen, nav, ico, esc, on, toast, dialog, closeOverlay, pinpadHTML, pinDotsHTML, wirePin, action } = TB.ui;
+  var { store, maskPhone, normPhone } = TB.store;
+  var { brandbar, busy } = TB.common;
+
 
 /* ------------------------------------------------------------------- login */
 function loginHTML() {
@@ -106,7 +113,6 @@ screen('fingerprint', {
 let fpDone = false;
 
 /* ------------------------------------------------------------------ actions */
-import { action } from '../ui.js';
 
 action('login.next', () => {
   const input = document.querySelector('#loginPhone');
@@ -127,3 +133,6 @@ action('fp.login', () => {
 action('fp.other', () => nav.reset('login', {}, { tab: true }));
 
 action('auth.soon', () => toast('Something went wrong. Please try again later.', 'err'));
+
+
+})();

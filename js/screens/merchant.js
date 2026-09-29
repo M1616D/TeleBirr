@@ -1,6 +1,13 @@
-import { screen, nav, action, ico, esc, toast } from '../ui.js';
-import { ADS } from '../data.js';
-import { topbar, carousel, wireCarousel, startPay, notReady } from './common.js';
+/* js/screens/merchant.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.merchant || (NS.merchant = {});
+  var { screen, nav, action, ico, esc, toast } = TB.ui;
+  var { ADS } = TB.data;
+  var { topbar, carousel, wireCarousel, startPay, notReady } = TB.common;
+
 
 screen('zemenLoading', {
   view() {
@@ -94,3 +101,6 @@ action('merchant.next', () => {
     note: note ? note.value : ''
   });
 });
+
+
+})();

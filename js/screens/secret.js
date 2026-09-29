@@ -1,12 +1,19 @@
-import { screen, nav, action, ico, esc, on, toast, sheet, closeOverlay, dialog, wirePin, pinDotsHTML } from '../ui.js';
-import { store, money, normPhone } from '../store.js';
-import { topbar, notReady } from './common.js';
+/* js/screens/secret.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.secret || (NS.secret = {});
+  var { screen, nav, action, ico, esc, on, toast, sheet, closeOverlay, dialog, wirePin, pinDotsHTML } = TB.ui;
+  var { store, money, normPhone } = TB.store;
+  var { topbar, notReady } = TB.common;
+
 
 let tab = 'account';
 let editing = null; // receiver id being edited
 
 /** PIN gate: opened from the version number on the About screen. */
-export function openSecret() {
+function openSecret() {
   const el = sheet(`
     <div style="text-align:center;padding:20px 20px 6px" class="pinmodal">
       <div class="tiny muted" style="letter-spacing:.5px">PRIVATE SETTINGS</div>
@@ -63,21 +70,48 @@ function accountTab() {
     ${field('sLevel', 'Account level', p.level, 'text', 'inputmode="numeric" maxlength="2"')}
     <button class="btn" type="button" data-act="secret.saveAccount">Save account info</button>
   </div>
-  <div class="small muted" style="padding:0 18px 8px;line-height:1.6">These details drive the Home screen, the Account tab and every receipt the app generates.</div>`;
+  <div class="small muted" style="padding:0 18px 8px;line-height:1.6">These details drive the Home screen, the Account tab and every receipt the app generates.</div>
+  <button class="btn ghost" type="button" data-act="secret.tab" data-tab="receivers" style="margin:0 12px 18px;width:calc(100% - 24px)">
+    ${ico('userPlus', 'ico sm')} Upcoming receiver name editor
+  </button>`;
 }
 
+/* The "upcoming receiver name editor": the name saved here is the name that gets
+   printed on the receipt when money is sent to that phone number. */
 function receiversTab() {
   const rs = store.receivers;
-  return `<div class="card" style="margin:12px;padding:14px">
-    <div class="bold" style="margin-bottom:12px">${editing ? 'Edit receiver' : 'Add receiver'}</div>
-    ${field('rName', 'Receiver name', editing ? (rs.find(r => r.id === editing) || {}).name || '' : '')}
-    ${field('rPhone', 'Receiver phone number', editing ? (rs.find(r => r.id === editing) || {}).phone || '' : '', 'tel', 'inputmode="numeric" maxlength="10"')}
+  const cur = (editing && rs.find(r => r.id === editing)) || {};
+  const nm = cur.name || '';
+  const ph = cur.phone ? normPhone(cur.phone) : '';
+  return `<div class="card" style="margin:12px;padding:14px;border-left:4px solid var(--green)">
+    <div class="bold" style="font-size:15px">Upcoming receiver name editor</div>
+    <div class="small muted" style="margin-top:6px;line-height:1.55">
+      Set the name and phone number of the next person you will send money to and save it here.
+      When you send money to that number, the receipt is generated with this exact name.
+    </div>
+  </div>
+  <div class="card" style="margin:12px;padding:14px">
+    <div class="bold" style="margin-bottom:12px">${editing ? 'Edit receiver' : 'New upcoming receiver'}</div>
+    <div class="field" style="margin-bottom:12px">
+      <label>Receiver name (this is what the receipt shows)</label>
+      <div class="in"><input id="rName" type="text" value="${esc(nm)}" placeholder="e.g. Abebe Kebede"></div>
+    </div>
+    <div class="field" style="margin-bottom:12px">
+      <label>Receiver phone number</label>
+      <div class="in">
+        <span class="pre">+251</span>
+        <input id="rPhone" type="tel" inputmode="numeric" maxlength="10" value="${esc(ph)}" placeholder="9xx xxx xxx">
+      </div>
+    </div>
+    <div class="rr-preview">${ico('doc', 'ico sm')}
+      <span>Receipt will show:</span> <b id="rrPreview">${esc(nm || '\u2014')}</b>
+    </div>
     <div class="row" style="gap:10px">
       <button class="btn" type="button" data-act="secret.saveReceiver">${editing ? 'Update receiver' : 'Save receiver'}</button>
       ${editing ? `<button class="btn outline" type="button" data-act="secret.cancelReceiver" style="max-width:110px">Cancel</button>` : ''}
     </div>
   </div>
-  <div class="sec-title">Saved receivers (${rs.length})</div>
+  <div class="sec-title">Saved receivers (${rs.length}) \u2014 used by Send Money \u2192 Recent</div>
   <div class="list" style="margin:0 12px">
     ${rs.length ? rs.map(r => `<div class="it">
       <span class="avatar">${ico('user', 'ico')}</span>
@@ -85,11 +119,16 @@ function receiversTab() {
         <span class="t" style="display:block">${esc(r.name)}</span>
         <span class="s" style="display:block">+251 ${esc(normPhone(r.phone))}</span>
       </span>
-      <button type="button" data-act="secret.editReceiver" data-id="${esc(r.id)}" style="color:var(--green-2);padding:6px">${ico('pencil', 'ico sm')}</button>
-      <button type="button" data-act="secret.delReceiver" data-id="${esc(r.id)}" style="color:#c95a5a;padding:6px">${ico('trash', 'ico sm')}</button>
-    </div>`).join('') : '<div class="center muted small" style="padding:22px">No receivers saved</div>'}
+      <button type="button" data-act="secret.editReceiver" data-id="${esc(r.id)}" style="color:var(--green-2);padding:6px" aria-label="Edit">${ico('pencil', 'ico sm')}</button>
+      <button type="button" data-act="secret.delReceiver" data-id="${esc(r.id)}" style="color:#c95a5a;padding:6px" aria-label="Delete">${ico('trash', 'ico sm')}</button>
+    </div>`).join('') : '<div class="center muted small" style="padding:22px">No receivers saved yet</div>'}
   </div>
-  <div class="small muted" style="padding:12px 18px;line-height:1.6">Saved receivers appear under Send Money → Recent, and the name here is the name printed on the generated receipt.</div>`;
+  <div class="small muted" style="padding:14px 18px 20px;line-height:1.65">
+    <b>How it works</b><br>
+    1. Save the name and phone number of your upcoming receiver here.<br>
+    2. Open Send Money \u2192 To Individual and pick that receiver from Recent (or type the same number).<br>
+    3. Enter the amount and finish \u2014 the receipt is printed with the saved name.
+  </div>`;
 }
 
 function appTab() {
@@ -132,6 +171,16 @@ screen('secret', {
       const r = new FileReader();
       r.onload = () => { store.setProfile({ photo: r.result }); nav.replace('secret'); toast('Photo updated', 'ok'); };
       r.readAsDataURL(file);
+    });
+    // live "receipt will show" preview while typing the receiver name
+    const rn = root.querySelector('#rName');
+    const rp = root.querySelector('#rrPreview');
+    if (rn && rp) {
+      rn.addEventListener('input', () => { rp.textContent = rn.value.trim() || '\u2014'; });
+    }
+    const rph = root.querySelector('#rPhone');
+    if (rph) rph.addEventListener('input', () => {
+      rph.value = normPhone(rph.value).slice(0, 9);
     });
   }
 });
@@ -222,3 +271,7 @@ action('secret.resetAll', () => {
     onOk() { store.resetAll(); tab = 'account'; editing = null; nav.tab('home'); toast('App reset to defaults', 'ok'); }
   });
 });
+
+
+  Object.assign(NS, { openSecret });
+})();

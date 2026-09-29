@@ -1,7 +1,14 @@
-import { screen, nav, action, ico, esc, toast } from '../ui.js';
-import { APPS } from '../data.js';
-import { topbar, notReady, initials, hashColor } from './common.js';
-import { store } from '../store.js';
+/* js/screens/apps.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.apps || (NS.apps = {});
+  var { screen, nav, action, ico, esc, toast } = TB.ui;
+  var { APPS } = TB.data;
+  var { topbar, notReady, initials, hashColor } = TB.common;
+  var { store } = TB.store;
+
 
 const B = 'assets/brands/';
 
@@ -92,3 +99,6 @@ action('engage.start', () => nav.go('connect'));
 action('connect.qr', () => notReady('QR code'));
 action('connect.scan', () => notReady('Scanner'));
 action('connect.contacts', () => notReady('Phone contacts'));
+
+
+})();

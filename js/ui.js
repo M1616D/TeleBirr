@@ -1,10 +1,16 @@
+/* js/ui.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.ui || (TB.ui = {});
+
 /* UI toolkit: icons, tiny DOM helpers, router, toast, sheets, keypads. */
 
 /* ------------------------------------------------------------------ icons */
 const S = (d, extra = '') => `<svg viewBox="0 0 24 24" class="ico" aria-hidden="true">${d}${extra}</svg>`;
 const P = (d) => `<path d="${d}"/>`;
 
-export const I = {
+const I = {
   user: `<svg viewBox="0 0 24 24" class="ico fill"><circle cx="12" cy="8" r="4.2"/><path d="M3.6 21c.6-4.3 4-7 8.4-7s7.8 2.7 8.4 7z"/></svg>`,
   userO: S(P('M12 12.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z') + P('M4.5 20.5c.8-3.4 3.9-5.5 7.5-5.5s6.7 2.1 7.5 5.5')),
   userPlus: S(P('M10 12.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z') + P('M3 20.5c.7-3.3 3.5-5.5 7-5.5 1.1 0 2.2.2 3.1.7') + P('M17.5 14v6M14.5 17h6')),
@@ -35,6 +41,8 @@ export const I = {
   cash: `<svg viewBox="0 0 24 24" class="ico"><rect x="3" y="8.5" width="18" height="12" rx="2"/><path d="M3 13h18"/><path d="M18.5 6.2v-2M17.2 5h2.6"/></svg>`,
   airtime: `<svg viewBox="0 0 24 24" class="ico"><path d="M4 11h16v9H4z"/><path d="M3 8.2h18V11H3z"/><path d="M12 8.2v11.6"/><path d="M12 8.2C10.2 5.6 8.6 4.6 7.6 5.2c-1 .6-.4 2.2 1.3 3M12 8.2c1.8-2.6 3.4-3.6 4.4-3 .9.6.3 2.2-1.4 3"/><path d="M17.6 3.4l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5z"/><path d="M5.6 4.4l.4 1 1 .4-1 .4-.4 1-.4-1-1-.4 1-.4z"/></svg>`,
   bank: S(P('M3.5 9.6 12 4.5l8.5 5.1') + P('M5.8 11.6v6.2M10 11.6v6.2M14 11.6v6.2M18.2 11.6v6.2') + P('M4 20.5h16')),
+  store: S(P('M3.4 9.9h17.2') + P('M4.5 9.9 6 4.4h12l1.5 5.5') + P('M4.5 9.9v9a1.4 1.4 0 0 0 1.4 1.4h12.2a1.4 1.4 0 0 0 1.4-1.4v-9') + P('M9.4 20.3v-5.4h5.2v5.4')),
+  circlePlus: S('<circle cx="12" cy="12" r="8.6"/>' + P('M12 8.3v7.4M8.3 12h7.4')),
   doc: S(P('M6.5 3.5h7L18.5 8v12.5h-12z') + P('M13.5 3.5V8h5') + P('M9 12.5h6M9 16h6')),
   lock: S('<rect x="4.8" y="10.3" width="14.4" height="10" rx="2"/><path d="M8.4 10.3V7.6a3.6 3.6 0 0 1 7.2 0v2.7"/>'),
   key: S('<circle cx="8.4" cy="15.6" r="3.6"/><path d="M10.9 13.1 20 4M17 7l2.2 2.2M14.6 9.4l2 2"/>'),
@@ -64,28 +72,28 @@ export const I = {
   bankCard: S('<rect x="3" y="5.8" width="18" height="12.4" rx="2"/><path d="M3 10.2h18M6.5 14h4"/>')
 };
 
-export function ico(name, cls = 'ico') {
+function ico(name, cls = 'ico') {
   const s = I[name] || I.info;
   return s.replace('class="ico"', `class="${cls}"`);
 }
 
 /* ------------------------------------------------------------------ helpers */
-export function esc(s) {
+function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 }
 
-export const $ = (sel, root = document) => root.querySelector(sel);
-export const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-export function node(html) {
+function node(html) {
   const t = document.createElement('template');
   t.innerHTML = html.trim();
   return t.content.firstElementChild;
 }
 
-export function on(root, event, sel, fn) {
+function on(root, event, sel, fn) {
   root.addEventListener(event, e => {
     const t = e.target.closest(sel);
     if (t && root.contains(t)) fn(e, t);
@@ -93,12 +101,12 @@ export function on(root, event, sel, fn) {
 }
 
 /* ------------------------------------------------------------------ router */
-export const screens = {};
+const screens = {};
 const stack = [];
 
-export function screen(name, def) { screens[name] = def; }
+function screen(name, def) { screens[name] = def; }
 
-export const nav = {
+const nav = {
   go(name, params = {}, opts = {}) {
     const def = screens[name];
     if (!def) { toast('Something went wrong. Please try again later.', 'err'); return; }
@@ -172,14 +180,14 @@ function render(anim) {
 }
 
 /** Hooks the host app can install (used for history integration). */
-export const hooks = {};
+const hooks = {};
 
 /* Global action delegation: anything with data-act is handled; unknown actions
    fail loudly (toast) instead of doing nothing. */
 const actions = {};
-export function action(name, fn) { actions[name] = fn; }
+function action(name, fn) { actions[name] = fn; }
 
-export function bindActions(root) {
+function bindActions(root) {
   on(root, 'click', '[data-act]', (e, el) => {
     const n = el.dataset.act;
     const fn = actions[n];
@@ -195,11 +203,11 @@ export function bindActions(root) {
   on(root, 'pointerup', '[data-act],.tap', (e, el) => el.classList.remove('tapped'));
 }
 
-export const FAIL_MSG = 'Something went wrong. Please try again later.';
-export function fail() { toast(FAIL_MSG, 'err'); }
+const FAIL_MSG = 'Something went wrong. Please try again later.';
+function fail() { toast(FAIL_MSG, 'err'); }
 
 /* ------------------------------------------------------------------ toast */
-export function toast(msg, kind = '', ms) {
+function toast(msg, kind = '', ms) {
   const wrap = document.getElementById('toastwrap');
   const t = node(`<div class="toast ${kind}">${esc(msg)}</div>`);
   wrap.appendChild(t);
@@ -213,7 +221,7 @@ export function toast(msg, kind = '', ms) {
 }
 
 /* ------------------------------------------------------------------ overlay */
-export function closeOverlay(force) {
+function closeOverlay(force) {
   if (!overlay) return;
   if (overlay.dataset.locked === '1' && !force) return;
   overlay.hidden = true;
@@ -222,7 +230,7 @@ export function closeOverlay(force) {
   overlay.onclick = null;
 }
 
-export function sheet(html, opts = {}) {
+function sheet(html, opts = {}) {
   if (!overlay) return null;
   overlay.hidden = false;
   overlay.dataset.locked = opts.locked ? '1' : '';
@@ -233,7 +241,7 @@ export function sheet(html, opts = {}) {
   return overlay.querySelector('.sheet');
 }
 
-export function closeSheet(force) {
+function closeSheet(force) {
   if (!overlay) return;
   const h = overlay.__onClose;
   overlay.__onClose = null;
@@ -241,7 +249,7 @@ export function closeSheet(force) {
   if (force) { overlay.hidden = true; overlay.innerHTML = ''; overlay.dataset.locked = ''; }
 }
 
-export function dialog(opts) {
+function dialog(opts) {
   if (!overlay) return;
   overlay.hidden = false;
   overlay.innerHTML = `<div class="scrim"></div>
@@ -262,7 +270,7 @@ export function dialog(opts) {
 }
 
 /* ------------------------------------------------------------------ inputs */
-export function digitsOnly(el, max) {
+function digitsOnly(el, max) {
   el.addEventListener('input', () => {
     const v = el.value.replace(/\D/g, '').slice(0, max || 20);
     if (v !== el.value) el.value = v;
@@ -273,7 +281,7 @@ export function digitsOnly(el, max) {
 
 /* ------------------------------------------------------------------ keypad */
 /** Amount keypad (1..9, backspace, 0, ., OK) — matches the telebirr layout. */
-export function keypadHTML(okLabel = 'OK') {
+function keypadHTML(okLabel = 'OK') {
   const k = (n, cls = '') => `<button type="button" class="${cls}" data-key="${n}">${n}</button>`;
   return `<div class="keypad">
     ${k(1)}${k(2)}${k(3)}<button type="button" data-key="bs">${ico('back', 'ico')}</button>
@@ -285,7 +293,7 @@ export function keypadHTML(okLabel = 'OK') {
 }
 
 /** PIN pad (1..9, blank, 0, backspace). */
-export function pinpadHTML() {
+function pinpadHTML() {
   const k = (n) => `<button type="button" data-pk="${n}">${n}</button>`;
   return `<div class="pinpad">
     ${k(1)}${k(2)}${k(3)}${k(4)}${k(5)}${k(6)}${k(7)}${k(8)}${k(9)}
@@ -294,14 +302,14 @@ export function pinpadHTML() {
   </div>`;
 }
 
-export function pinDotsHTML(n, filled) {
+function pinDotsHTML(n, filled) {
   let s = '<div class="pindots">';
   for (let i = 0; i < n; i++) s += `<i class="${i < filled ? 'on' : ''}"></i>`;
   return s + '</div>';
 }
 
 /** Attach keypad behaviour to a value string. */
-export function wireKeypad(root, { onValue, onOk, max = 12 }) {
+function wireKeypad(root, { onValue, onOk, max = 12 }) {
   let value = '';
   const set = (v) => { value = v; const ok = root.querySelector('.keypad .ok'); if (ok) ok.classList.toggle('ready', v !== '' && v !== '.'); onValue && onValue(v); };
   on(root, 'click', '.keypad button', (e, btn) => {
@@ -318,7 +326,7 @@ export function wireKeypad(root, { onValue, onOk, max = 12 }) {
 }
 
 /** Attach PIN pad behaviour. */
-export function wirePin(root, len, onComplete) {
+function wirePin(root, len, onComplete) {
   let value = '';
   const dotsWrap = root.querySelector('.pinpad2, .pindots')?.parentElement;
   const paint = () => {
@@ -341,7 +349,7 @@ export function wirePin(root, len, onComplete) {
 
 /* ------------------------------------------------------------------ QR art */
 /** Deterministic pseudo-QR so the About/Verify screens look right offline. */
-export function paintQR(canvas, seed) {
+function paintQR(canvas, seed) {
   const N = 25, cells = [];
   let h = 2166136261;
   const s = String(seed || 'telebirr');
@@ -370,19 +378,41 @@ export function paintQR(canvas, seed) {
 }
 
 /* ------------------------------------------------------------------ export */
-export function initUI() {
+/* Design unit: every measurement in the stylesheet is taken from the real app
+   at 360 CSS px wide, so --u = min(viewport,frame) / 360 keeps the exact same
+   proportions from small phones up to the desktop frame. */
+function applyUnit() {
+  var w = Math.min(window.innerWidth || 360, 430);
+  document.documentElement.style.setProperty('--u', String(w / 360));
+}
+
+function initUI() {
+  applyUnit();
+  window.addEventListener('resize', applyUnit);
+  window.addEventListener('orientationchange', applyUnit);
   view = document.getElementById('view');
   tabbar = document.getElementById('tabbar');
   fab = document.getElementById('fab');
   overlay = document.getElementById('overlay');
   overlay.addEventListener('click', e => { if (e.target === overlay) closeOverlay(); });
+  // the loader is an 8 dot ring (the dots carry their own size via CSS)
+  document.querySelectorAll('.spinner').forEach(sp => {
+    if (sp.children.length) return;
+    let html = '';
+    for (let i = 0; i < 8; i++) html += '<i></i>';
+    sp.innerHTML = html;
+  });
   bindActions(document);
 }
 
 /** True while an overlay (sheet/dialog) is showing. */
-export function overlayOpen() { return overlay ? !overlay.hidden : false; }
+function overlayOpen() { return overlay ? !overlay.hidden : false; }
 
-export function phoneEl() { return document.getElementById('phone'); }
+function phoneEl() { return document.getElementById('phone'); }
 
 /* text wrapping label helper for tiles */
-export function twoLine(s) { return esc(s); }
+function twoLine(s) { return esc(s); }
+
+
+  Object.assign(NS, { I, ico, esc, $, $$, node, on, screens, screen, nav, hooks, action, bindActions, FAIL_MSG, fail, toast, closeOverlay, sheet, closeSheet, dialog, digitsOnly, keypadHTML, pinpadHTML, pinDotsHTML, wireKeypad, wirePin, paintQR, initUI, overlayOpen, phoneEl, twoLine });
+})();

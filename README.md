@@ -11,14 +11,15 @@ installed, and adapts from small phones (320 px) up to desktop.
 
 ## Run it
 
-No build step, no dependencies. Any static server works:
+No build step, no dependencies, no module loader. Any static server works:
 
 ```bash
 python -m http.server 8123
 # then open http://127.0.0.1:8123/index.html
 ```
 
-`file://` will not work (ES modules + service worker need HTTP).
+Opening `index.html` directly from disk also works — the app is plain classic scripts, so
+`file://` is fine (only the service worker / installability need HTTP(S)).
 
 ## Install on a phone
 
@@ -50,7 +51,7 @@ new code, the installed app picks it up on the next open (and reloads itself onc
 | --- | --- |
 | Launch | green splash → spinner → login |
 | Login | mobile number → 6-digit PIN → fingerprint verification |
-| Home | balance + endekise + reward (each hideable), marquee, 8 quick tiles, ad carousel, Scan QR, first-login Fayda popup |
+| Home | balance + endekise + reward (each hideable, masked by default), marquee, 8 quick tiles, ad carousel, Transaction Details, 8 more tiles, Scan QR, first-login Fayda popup |
 | Send Money | To Individual / To Group menu, mobile entry with recents, amount keypad, PIN, confirmation sheet, receipt |
 | Airtime/Package | Self/Other, phone entry, Airtime denominations or Package list with search, confirmation, receipt |
 | Transfer to Bank | bank chooser (36 banks + search), account number, amount, receipt, recents |
@@ -106,6 +107,20 @@ stamp or seal.
 
 ---
 
+## How the replica stays size-accurate
+
+Every measurement in `css/app.css` was taken from the supplied screenshots (which are a
+360 CSS px wide phone) and is expressed as a multiple of one design unit:
+
+```css
+--u: <min(viewport, 430px) / 360>   /* set by js/ui.js, refreshed on resize */
+width: calc(90px * var(--u));       /* 90 px on a 360 px screen, scaled elsewhere */
+```
+
+So the brand bar (36 px), hero (197 px), tile grid (74 px cards, 11 px gaps), banner (302×92),
+Scan QR (276×30), tab bar (52 px) and the floating pin button (45 px) keep their exact
+proportions from a 320 px phone up to the 430 px desktop frame.
+
 ## Project layout
 
 ```
@@ -113,15 +128,16 @@ index.html                 app shell, splash, tab bar, overlays
 manifest.webmanifest       installable PWA metadata
 sw.js                      service worker (auto-update + offline)
 css/app.css                all styling, phone-first and fluid
-js/app.js                  boot, screens, tab bar, history, service worker wiring
-js/ui.js                   icons, router, toasts, sheets, keypads, QR painting
+js/app.js                  boot, splash, tab bar, history, service worker wiring
+js/ui.js                   icons, design unit, router, toasts, sheets, keypads, QR painting
 js/store.js                localStorage state (profile, prefs, receivers, history)
 js/data.js                 payment catalogue, apps, banks, packages, FAQ
-js/screens/*.js            one module per area
+js/screens/*.js            one classic script per area
 assets/brands              logos supplied in ui/logos (+ tile icons cropped from screenshots)
 assets/ads                 banner images supplied in ui/ads
+assets/ui                  splash + balance-header backgrounds derived from the screenshots
 assets/icons               app icon
-ui/                        the original screenshots this replica was built from
+ui/                        the original screenshots this replica was built from (not committed)
 ```
 
 ## Tests performed

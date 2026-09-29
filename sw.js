@@ -3,7 +3,7 @@
    scripts), so pushing new code updates the installed app without reinstalling.
    Images are cache-first with a background refresh. */
 
-const VERSION = 'telebirr-v1';
+const VERSION = 'telebirr-v2';
 const CORE = [
   './',
   './index.html',
@@ -27,7 +27,15 @@ const CORE = [
   './js/screens/account.js',
   './js/screens/secret.js',
   './assets/icons/icon-512.png',
+  './assets/ui/splash-bg.jpg',
+  './assets/ui/header-bg.jpg',
   './assets/brands/ethio-telecom-name.png',
+  './assets/brands/awash.png',
+  './assets/brands/aatma.png',
+  './assets/brands/dashen.jpg',
+  './assets/brands/tile-teleev.png',
+  './assets/brands/tile-tolo.png',
+  './assets/brands/tile-tele-device.png',
   './assets/brands/telebirr-text.png',
   './assets/brands/telebirr-mark.png',
   './assets/brands/telebirr.png',

@@ -1,14 +1,19 @@
-import { screen, nav, action, ico, esc, on, toast, sheet, closeOverlay, fail } from '../ui.js';
-import { store, money } from '../store.js';
-import { HOME_TILES, ADS } from '../data.js';
-import { brandbar, carousel, wireCarousel, notReady } from './common.js';
+/* js/screens/home.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.home || (NS.home = {});
+  var { screen, nav, action, ico, esc, on, toast, closeOverlay, fail } = TB.ui;
+  var { store, money } = TB.store;
+  var { HOME_TILES, HOME_TILES2, ADS } = TB.data;
+  var { brandbar, carousel, wireCarousel, notReady } = TB.common;
 
-const hidden = { bal: false, end: true, reward: false };
+/* balances start masked, exactly like the reference screens */
+const hidden = { bal: true, end: true, reward: false };
 
 function tileHTML(t) {
-  const inner = t.img
-    ? `<img src="${t.img}" alt="">`
-    : ico(t.icon, 'ico');
+  const inner = t.img ? `<img src="${t.img}" alt="">` : ico(t.icon, 'ico');
   return `<button class="tile" type="button" data-act="${t.act}" data-key="${t.key}">
     ${t.badge ? `<span class="badge">${esc(t.badge)}</span>` : ''}
     <span class="ti">${inner}</span>
@@ -22,38 +27,42 @@ function valueHTML(which) {
   return hidden.reward ? '******' : money(store.profile.reward);
 }
 
+/* masked sub-values are rendered smaller, like the real app */
+function valueClass(which) {
+  if (which === 'bal') return '';
+  return hidden[which] ? 'v mask' : 'v';
+}
+
+function eyeBtn(which) {
+  return `<button type="button" data-eye="${which}" aria-label="Toggle">${ico(hidden[which] ? 'eyeOff' : 'eye', 'ico sm')}</button>`;
+}
+
 function heroHTML() {
   const p = store.profile;
   return `<div class="home-hero">
     <div class="hero-top">
-      <button class="avatar round" type="button" data-act="home.photo" style="width:38px;height:38px;background:${p.photo ? '#eee' : 'var(--gold)'};box-shadow:0 0 0 1.5px rgba(255,255,255,.7)">
+      <button class="avatar round" type="button" data-act="home.photo" aria-label="Profile photo">
         ${p.photo ? `<img src="${esc(p.photo)}" alt="">` : ico('user', 'ico')}
       </button>
       <div class="hi">Selam, ${esc(p.name)}</div>
       <div class="acts">
         <button type="button" data-act="home.search" aria-label="Search">${ico('search', 'ico')}</button>
         <button type="button" data-act="home.notif" aria-label="Notifications">${ico('bell', 'ico')}</button>
-        <button type="button" class="lang" data-act="home.lang">${esc((store.prefs.language || 'English').slice(0, 5))} <b>▼</b></button>
+        <button type="button" class="lang" data-act="home.lang">${esc((store.prefs.language || 'English').slice(0, 4))} <b>&#9660;</b></button>
       </div>
     </div>
     <div class="balance">
-      <div class="lbl">Balance (ETB)
-        <button type="button" data-eye="bal" aria-label="Toggle balance">${ico(hidden.bal ? 'eyeOff' : 'eye', 'ico sm')}</button>
-      </div>
+      <div class="lbl">Balance (ETB) ${eyeBtn('bal')}</div>
       <div class="amt" data-val="bal">${valueHTML('bal')}</div>
     </div>
     <div class="sub-bal">
       <div>
-        <div class="k">Endekise (ETB)
-          <button type="button" data-eye="end" aria-label="Toggle endekise">${ico(hidden.end ? 'eyeOff' : 'eye', 'ico sm')}</button>
-        </div>
-        <div class="v" data-val="end">${valueHTML('end')}</div>
+        <div class="k">Endekise (ETB) ${eyeBtn('end')}</div>
+        <div class="${valueClass('end')}" data-val="end">${valueHTML('end')}</div>
       </div>
       <div>
-        <div class="k">Reward (ETB)
-          <button type="button" data-eye="reward" aria-label="Toggle reward">${ico(hidden.reward ? 'eyeOff' : 'eye', 'ico sm')}</button>
-        </div>
-        <div class="v" data-val="reward">${valueHTML('reward')}</div>
+        <div class="k">Reward (ETB) ${eyeBtn('reward')}</div>
+        <div class="${valueClass('reward')}" data-val="reward">${valueHTML('reward')}</div>
       </div>
     </div>
   </div>`;
@@ -64,19 +73,19 @@ const POPUP = () => `<div class="promo-scrim" data-act="home.popup.close"></div>
     <div class="promo-card">
       <div class="promo-hero">
         <div class="promo-phone">
-          <div class="pbar"><span>2:31</span><span>▮▮</span></div>
-          <div class="ptitle">Account <span>▢</span></div>
+          <div class="pbar"><span>2:31</span><span>&#9646;&#9646;</span></div>
+          <div class="ptitle">Account <span>&#9634;</span></div>
           <ul>
-            <li>Change PIN <b>›</b></li>
-            <li>Change Language <b>›</b></li>
-            <li>Security Question <i>English</i><b>›</b></li>
-            <li>Biometric Authentication <b>›</b></li>
-            <li>FAQ <b>›</b></li>
-            <li>About <b>›</b></li>
-            <li>Share <b>›</b></li>
+            <li>Change PIN <b>&#8250;</b></li>
+            <li>Change Language <b>&#8250;</b></li>
+            <li>Security Question <i>English</i><b>&#8250;</b></li>
+            <li>Biometric Authentication <b>&#8250;</b></li>
+            <li>FAQ <b>&#8250;</b></li>
+            <li>About <b>&#8250;</b></li>
+            <li>Share <b>&#8250;</b></li>
           </ul>
         </div>
-        <div class="promo-pill">${ico('shield', 'ico sm')} Verify/Upgrade with Fayda (NID) <b>›</b></div>
+        <div class="promo-pill">${ico('shield', 'ico sm')} Verify/Upgrade with Fayda (NID) <b>&#8250;</b></div>
       </div>
       <div class="promo-body">
         <p>If you haven't linked your telebirr account with your Fayda ID,</p>
@@ -92,13 +101,13 @@ screen('home', {
   view() {
     return `${brandbar()}
       ${heroHTML()}
-      <div class="marquee"><span>ONE APP FOR ALL YOUR NEEDS! &nbsp;•&nbsp; ONE APP FOR ALL YOUR NEEDS! &nbsp;•&nbsp; ONE APP FOR ALL YOUR NEEDS!</span></div>
+      <div class="marquee"><span>ONE APP FOR ALL YOUR NEEDS! &nbsp;&#8226;&nbsp; ONE APP FOR ALL YOUR NEEDS! &nbsp;&#8226;&nbsp; ONE APP FOR ALL YOUR NEEDS!</span></div>
       <div class="body">
         <div class="tiles">${HOME_TILES.map(tileHTML).join('')}</div>
-        <div class="home-rest">
-          ${carousel(ADS)}
-          <button class="btn scanbtn" type="button" data-act="home.scan">${ico('scan', 'ico')} Scan QR</button>
-        </div>
+        <div class="carousel-sec">${carousel(ADS)}</div>
+        <button class="txlink" type="button" data-act="home.txdetails"><b>Transaction Details</b>${ico('chevR', 'ico')}</button>
+        <div class="tiles">${HOME_TILES2.map(tileHTML).join('')}</div>
+        <button class="btn scanbtn" type="button" data-act="home.scan">${ico('scan', 'ico')} Scan QR</button>
       </div>
       ${store.prefs.popupSeen ? '' : POPUP()}`;
   },
@@ -109,7 +118,10 @@ screen('home', {
       hidden[k] = !hidden[k];
       el.innerHTML = ico(hidden[k] ? 'eyeOff' : 'eye', 'ico sm');
       const v = root.querySelector(`[data-val="${k}"]`);
-      if (v) v.textContent = valueHTML(k);
+      if (v) {
+        v.textContent = valueHTML(k);
+        if (k !== 'bal') v.className = hidden[k] ? 'v mask' : 'v';
+      }
     });
     const cb = root.querySelector('#noPopup');
     if (cb) cb.addEventListener('change', () => { if (cb.checked) store.setPref('popupSeen', true); });
@@ -126,6 +138,8 @@ action('home.notif', () => nav.go('notifications'));
 action('home.lang', () => nav.go('language'));
 
 action('home.scan', () => notReady('QR scanner'));
+
+action('home.txdetails', () => nav.tab('payment'));
 
 action('home.fayda', () => notReady('Fayda'));
 
@@ -167,3 +181,13 @@ action('tile.zemen', () => nav.go('zemenLoading'));
 action('tile.cash', () => notReady('Cash in / Cash out'));
 action('tile.dashen', () => notReady('Financial Service with Dashen'));
 action('tile.siinqee', () => notReady('Financial Service with Siinqee'));
+action('tile.awash', () => notReady('Financial Service with Awash'));
+action('tile.merchant', () => nav.go('merchant'));
+action('tile.teleev', () => notReady('teleEV Charging'));
+action('tile.tolo', () => notReady('TOLO Payment'));
+action('tile.aatraffic', () => notReady('AA Traffic Penalty Payment'));
+action('tile.aatma', () => notReady('AATMA Parking Payment'));
+action('tile.teledevice', () => notReady('tele Device Financing'));
+action('tile.more', () => nav.tab('apps'));
+
+})();

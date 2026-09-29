@@ -1,7 +1,14 @@
-import { screen, nav, action, ico, esc, on, toast, wireKeypad } from '../ui.js';
-import { store, money, normPhone } from '../store.js';
-import { ADS, AIRTIME, PACKAGES } from '../data.js';
-import { topbar, carousel, wireCarousel, amountPageHTML, startPay, notReady, busy } from './common.js';
+/* js/screens/airtime.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.airtime || (NS.airtime = {});
+  var { screen, nav, action, ico, esc, on, toast, wireKeypad } = TB.ui;
+  var { store, money, normPhone } = TB.store;
+  var { ADS, AIRTIME, PACKAGES } = TB.data;
+  var { topbar, carousel, wireCarousel, amountPageHTML, startPay, notReady, busy } = TB.common;
+
 
 let state = { recipient: 'Self', mode: 'Airtime', amount: null, pkg: null, phone: '' };
 
@@ -151,3 +158,6 @@ action('airtime.pkg', (el) => {
     note: name
   });
 });
+
+
+})();

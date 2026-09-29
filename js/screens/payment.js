@@ -1,6 +1,13 @@
-import { screen, nav, action, ico, esc, on, toast, wireKeypad } from '../ui.js';
-import { PAYMENT, ADS } from '../data.js';
-import { topbar, carousel, wireCarousel, catalogIcon, amountPageHTML, startPay, notReady, initials, hashColor } from './common.js';
+/* js/screens/payment.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.payment || (NS.payment = {});
+  var { screen, nav, action, ico, esc, on, toast, wireKeypad } = TB.ui;
+  var { PAYMENT, ADS } = TB.data;
+  var { topbar, carousel, wireCarousel, catalogIcon, amountPageHTML, startPay, notReady, initials, hashColor } = TB.common;
+
 
 let open = null;
 
@@ -105,3 +112,6 @@ action('bill.next', () => {
     heading: `Pay to ${title}`
   });
 });
+
+
+})();

@@ -1,6 +1,13 @@
-import { screen, nav, action, ico, esc, toast } from '../ui.js';
-import { receiptHTML, receiptDocHTML, printDoc, shareTxn, topbar } from './common.js';
-import { store } from '../store.js';
+/* js/screens/receipt.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.receipt || (NS.receipt = {});
+  var { screen, nav, action, ico, esc, toast } = TB.ui;
+  var { receiptHTML, receiptDocHTML, printDoc, shareTxn, topbar } = TB.common;
+  var { store } = TB.store;
+
 
 let current = null;
 
@@ -44,3 +51,6 @@ action('receipt.share', () => {
 action('receipt.close', () => {
   nav.tab('home');
 });
+
+
+})();

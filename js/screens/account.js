@@ -1,7 +1,14 @@
-import { screen, nav, action, ico, esc, on, toast, dialog, closeOverlay, paintQR, wirePin, pinpadHTML, pinDotsHTML } from '../ui.js';
-import { store, money, normPhone } from '../store.js';
-import { FAQ, LANGS, NOTIF, COUPON_TABS } from '../data.js';
-import { topbar, notReady, brandbar } from './common.js';
+/* js/screens/account.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.account || (NS.account = {});
+  var { screen, nav, action, ico, esc, on, toast, dialog, closeOverlay, paintQR, wirePin, pinpadHTML, pinDotsHTML, FAIL_MSG } = TB.ui;
+  var { store, money, normPhone } = TB.store;
+  var { FAQ, LANGS, NOTIF, COUPON_TABS } = TB.data;
+  var { topbar, notReady, brandbar } = TB.common;
+
 
 const VERSION = 'V1.2.3';
 
@@ -494,8 +501,14 @@ action('secret.tap', () => {
   tapTimer = setTimeout(() => { taps = 0; }, 2600);
   if (taps >= 5) {
     taps = 0;
-    import('./secret.js').then(m => m.openSecret());
+    // classic script bundle: the secret screen exports itself on TB.mod.secret
+    const s = (window.TB.mod || {}).secret;
+    if (s && s.openSecret) s.openSecret();
+    else toast(FAIL_MSG, 'err');
   } else if (taps >= 3) {
     toast(`${5 - taps} more…`, '', 700);
   }
 });
+
+
+})();

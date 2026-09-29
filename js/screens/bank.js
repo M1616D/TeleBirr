@@ -1,7 +1,14 @@
-import { screen, nav, action, ico, esc, on, toast, wireKeypad } from '../ui.js';
-import { store } from '../store.js';
-import { ADS, BANKS } from '../data.js';
-import { topbar, carousel, wireCarousel, amountPageHTML, startPay, notReady, catalogIcon } from './common.js';
+/* js/screens/bank.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.mod || (TB.mod = {});
+  NS = NS.bank || (NS.bank = {});
+  var { screen, nav, action, ico, esc, on, toast, wireKeypad } = TB.ui;
+  var { store } = TB.store;
+  var { ADS, BANKS } = TB.data;
+  var { topbar, carousel, wireCarousel, amountPageHTML, startPay, notReady, catalogIcon } = TB.common;
+
 
 let picked = null;
 
@@ -132,3 +139,6 @@ action('bank.recent', (el) => {
   picked = r.bank;
   nav.go('bankAmount', { bank: r.bank, account: r.account, holder: r.holder });
 });
+
+
+})();

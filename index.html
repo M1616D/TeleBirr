@@ -23,7 +23,10 @@
     <nav id="tabbar" class="tabbar" aria-label="Main"></nav>
 
     <button id="fab" class="fab" type="button" aria-label="Nearby agents">
-      <svg viewBox="0 0 24 24" class="ico"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+      <svg viewBox="0 0 24 24" class="ico" aria-hidden="true">
+        <path d="M12 22s7.4-6 7.4-11.6a7.4 7.4 0 1 0-14.8 0C4.6 16 12 22 12 22Z" fill="#8dc73f"/>
+        <circle cx="12" cy="10.4" r="2.8" fill="#fff"/>
+      </svg>
     </button>
 
     <div id="overlay" class="overlay" hidden></div>
@@ -40,9 +43,35 @@
     <div id="boot" class="boot" hidden>
       <div class="spinbox"><div class="spinner"></div></div>
     </div>
+
+    <div id="fatal" class="fatal" hidden>
+      <div class="fatal-card">
+        <b>Something went wrong.</b>
+        <p class="fatal-msg"></p>
+        <button type="button" onclick="location.reload()">Try again</button>
+      </div>
+    </div>
   </div>
 
-  <script type="module" src="js/app.js"></script>
+  <!-- Classic scripts (no ES modules): the app also runs straight from file://
+       and there is no module-loader failure mode that can strand the splash. -->
+  <script src="js/ui.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/screens/common.js"></script>
+  <script src="js/screens/auth.js"></script>
+  <script src="js/screens/home.js"></script>
+  <script src="js/screens/receipt.js"></script>
+  <script src="js/screens/send.js"></script>
+  <script src="js/screens/airtime.js"></script>
+  <script src="js/screens/bank.js"></script>
+  <script src="js/screens/merchant.js"></script>
+  <script src="js/screens/financial.js"></script>
+  <script src="js/screens/payment.js"></script>
+  <script src="js/screens/apps.js"></script>
+  <script src="js/screens/account.js"></script>
+  <script src="js/screens/secret.js"></script>
+  <script src="js/app.js"></script>
   <noscript><p style="padding:20px;font:16px system-ui">JavaScript is required to run this app.</p></noscript>
 </body>
 </html>

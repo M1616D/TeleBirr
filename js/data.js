@@ -1,15 +1,21 @@
+/* js/data.js - classic script (no module loader / works offline from file://). */
+(function () {
+  'use strict';
+  var TB = window.TB || (window.TB = {});
+  var NS = TB.data || (TB.data = {});
+
 /* Static content: menus, catalogues and lists that mirror the real app. */
 
 const B = 'assets/brands/';
 const A = 'assets/ads/';
 
-export const ADS = [
+const ADS = [
   { img: A + 'teleplay.jpg', label: 'TelePlay' },
   { img: A + 'zemen.jpg', label: 'Zemen GEBEYA' },
   { img: A + 'dstv.jpg', label: 'DSTv' }
 ];
 
-export const HOME_TILES = [
+const HOME_TILES = [
   { key: 'send', label: 'Send Money', icon: 'send', act: 'tile.send' },
   { key: 'cash', label: 'Cash In/ Out', icon: 'cash', act: 'tile.cash' },
   { key: 'airtime', label: 'Airtime/ Buy Package', icon: 'airtime', act: 'tile.airtime', badge: 'Up to 35%' },
@@ -20,8 +26,20 @@ export const HOME_TILES = [
   { key: 'bank', label: 'Transfer to Bank', icon: 'bank', act: 'tile.bank' }
 ];
 
+/* second tile group, shown under "Transaction Details" (right from the design) */
+const HOME_TILES2 = [
+  { key: 'awash', label: 'Financial Service with Awash', img: B + 'awash.png', act: 'tile.awash' },
+  { key: 'merchant', label: 'Pay for Merchant', icon: 'store', act: 'tile.merchant' },
+  { key: 'teleev', label: 'teleEV Charging', img: B + 'tile-teleev.png', act: 'tile.teleev' },
+  { key: 'tolo', label: 'TOLO Payment', img: B + 'tile-tolo.png', act: 'tile.tolo' },
+  { key: 'aatraffic', label: 'AA Traffic Penalty Payment', img: B + 'aatma.png', act: 'tile.aatraffic' },
+  { key: 'aatma', label: 'AATMA Parking Payment', img: B + 'aatma.png', act: 'tile.aatma' },
+  { key: 'teledevice', label: 'tele Device Financing', img: B + 'tile-tele-device.png', act: 'tile.teledevice' },
+  { key: 'more', label: 'More', icon: 'circlePlus', act: 'tile.more' }
+];
+
 /* ------------------------------------------------------------- payment page */
-export const PAYMENT = [
+const PAYMENT = [
   { key: 'utility', title: 'Utility', items: [
     { name: 'Pay Ethio telecom Bill', img: 'ethio-telecom-name.png' },
     { name: 'Electric utility', img: 'eeu.png' },
@@ -128,7 +146,7 @@ export const PAYMENT = [
 ];
 
 /* ------------------------------------------------------------------ apps page */
-export const APPS = [
+const APPS = [
   { name: 'My EthioNet', img: 'ethio-telecom.png' },
   { name: 'telebirrremit', img: 'telebirr.png' },
   { name: 'tele-online fixed service', img: 'telebirr.png' },
@@ -211,7 +229,7 @@ export const APPS = [
 ];
 
 /* -------------------------------------------------------------------- banks */
-export const BANKS = [
+const BANKS = [
   { name: 'Abay Bank', img: 'abay.png' },
   { name: 'Amhara Bank', img: 'amhara.png' },
   { name: 'Abyssinia Bank', img: 'abyssinia.png' },
@@ -251,9 +269,9 @@ export const BANKS = [
 ];
 
 /* ----------------------------------------------------------------- packages */
-export const AIRTIME = [5, 10, 15, 25, 50, 100, 250, 500, 1000];
+const AIRTIME = [5, 10, 15, 25, 50, 100, 250, 500, 1000];
 
-export const PACKAGES = [
+const PACKAGES = [
   { name: 'Daily Holiday', desc: 'Daily Holiday 79Min and 23SMS', price: 13 },
   { name: 'Daily Holiday', desc: 'Daily Holiday 4Min,50MB and 23 SMS', price: 26 },
   { name: 'Daily Holiday', desc: 'Daily Holiday 372MB and 23 SMS', price: 13 },
@@ -268,7 +286,7 @@ export const PACKAGES = [
 ];
 
 /* ---------------------------------------------------------------------- FAQ */
-export const FAQ = [
+const FAQ = [
   { q: 'What is telebirr service?', a: 'telebirr is a mobile money service that lets you send and receive money, pay bills, buy airtime and packages and shop, all from your phone.' },
   { q: 'What makes telebirr different from Airtime top-up', a: 'Airtime top-up only adds call credit to your SIM. telebirr is a full mobile wallet: you can store money, transfer it to any person or bank, and pay merchants.' },
   { q: 'What can I do with telebirr?', a: 'Send and receive money, cash in and cash out, buy airtime and packages, transfer to banks, pay utility and government bills, pay merchants with QR and shop online.' },
@@ -283,9 +301,9 @@ export const FAQ = [
 ];
 
 /* ------------------------------------------------------------------ misc */
-export const LANGS = ['English', 'አማርኛ', 'Afaan Oromoo', 'አረብኛ', 'Al Somali'];
+const LANGS = ['English', 'አማርኛ', 'Afaan Oromoo', 'አረብኛ', 'Al Somali'];
 
-export const NOTIF = [
+const NOTIF = [
   { name: 'System Information', color: '#3d8fd6', icon: 'info' },
   { name: 'Transaction Message', color: '#43a047', icon: 'doc' },
   { name: 'Promotion News', color: '#e9a13b', icon: 'percent' },
@@ -293,6 +311,10 @@ export const NOTIF = [
   { name: 'Driver Message', color: '#1fae9c', icon: 'car' }
 ];
 
-export const COUPON_TABS = ['Available (0)', 'Used', 'Expired', 'All', 'Expires Soon', 'Platform Coupons', 'More'];
+const COUPON_TABS = ['Available (0)', 'Used', 'Expired', 'All', 'Expires Soon', 'Platform Coupons', 'More'];
 
-export const COLORS = ['#f0b323', '#43a047', '#e57373', '#1e88e5', '#8e24aa', '#00897b', '#f4511e', '#5e35b1'];
+const COLORS = ['#f0b323', '#43a047', '#e57373', '#1e88e5', '#8e24aa', '#00897b', '#f4511e', '#5e35b1'];
+
+
+  Object.assign(NS, { ADS, HOME_TILES, HOME_TILES2, PAYMENT, APPS, BANKS, AIRTIME, PACKAGES, FAQ, LANGS, NOTIF, COUPON_TABS, COLORS });
+})();
